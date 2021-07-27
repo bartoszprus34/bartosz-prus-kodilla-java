@@ -1,14 +1,22 @@
 package com.kodilla.stream;
+import com.kodilla.stream.forumUser.Forum;
+import com.kodilla.stream.forumUser.ForumUser;
 
-import com.kodilla.stream.beautifier.PoemBeautifier;
-import com.kodilla.stream.beautifier.PoemDecorator;
+import java.time.LocalDate;
+import java.util.stream.Collectors;
+import java.util.Map;
 
 public class StreamMain {
     public static void main(String[] args) {
-        PoemBeautifier poemBeautifier = new PoemBeautifier();
-        poemBeautifier.beautify("Example Text1", text -> "ABC" + text + "ABC");
-        poemBeautifier.beautify("Example Text2", text -> text.toUpperCase());
-        poemBeautifier.beautify("Example Text3", text -> text.toLowerCase());
-        poemBeautifier.beautify("Example Text3", text -> text.substring(2,7));
+        Forum forumObject = new Forum();
+        Map<Integer, ForumUser> theResultMapOfUsers = forumObject.getUserList().stream()
+                .filter(forumUser -> forumUser.getSex()=='M')
+                .filter(forumUser -> LocalDate.now().getYear()-forumUser.getDateOfBirth().getYear()>19)
+                .filter(forumUser -> forumUser.getNumberOfPosts()>=1)
+                .collect(Collectors.toMap(ForumUser::getUserID, forumUser -> forumUser));
+
+        theResultMapOfUsers.entrySet().stream()
+                .map(entry -> entry.getKey()+": " +entry.getValue())
+                .forEach(System.out::println);
     }
 }
